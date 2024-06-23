@@ -1,0 +1,75 @@
+{
+  "profile": {
+    "name": "Иван Иванов",
+    "email": "ivan.ivanov@example.com",
+    "avatar": "path/to/avatar.jpg"
+  },
+  "statistics": {
+    "coursesCompleted": 5,
+    "totalHours": 120,
+    "achievementsUnlocked": 10
+  },
+  "courses": [
+    {
+      "id": 1,
+      "title": "Многопоточный Python",
+      "description": "С этим курсом вы освоите многопоточное программирование и откроете для себя мир высокопроизводительных приложений!",
+      "image": "path/to/image.png",
+      "link": "https://stepik.org/course/190100?search=4158697317",
+      "duration": "12 hours",
+      "type": "it",
+      "level": "easy",
+      "language": "ru"
+    },
+    {
+      "id": 2,
+      "title": "Веб-разработка с использованием JavaScript",
+      "description": "Научитесь создавать интерактивные веб-приложения с использованием JavaScript.",
+      "image": "path/to/image2.png",
+      "link": "https://stepik.org/course/190101?search=4158697318",
+      "duration": "10 hours",
+      "type": "it",
+      "level": "normal",
+      "language": "ru"
+    }
+  ],
+  "achievements": [
+    {
+      "id": 1,
+      "title": "Первый шаг",
+      "description": "Завершите первый курс.",
+      "date": "2023-01-01"
+    },
+    {
+      "id": 2,
+      "title": "Мастер многозадачности",
+      "description": "Освойте многопоточное программирование.",
+      "date": "2023-02-01"
+    }
+  ],
+  "notifications": [
+    {
+      "id": 1,
+      "message": "Новый курс доступен!",
+      "date": "2023-03-01"
+    },
+    {
+      "id": 2,
+      "message": "Ваш прогресс сохранен.",
+      "date": "2023-03-02"
+    }
+  ],
+  "settings": [
+    {
+      "id": 1,
+      "name": "Уведомления по email",
+      "enabled": true
+    },
+    {
+      "id": 2,
+      "name": "Публичный профиль",
+      "enabled": false
+    }
+  ]
+}
+

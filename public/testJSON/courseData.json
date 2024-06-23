@@ -1,0 +1,59 @@
+{
+  "courses": [
+    {
+      "id": 1,
+      "title": "Многопоточный Python",
+      "description": "С этим курсом вы освоите многопоточное программирование и откроете для себя мир высокопроизводительных приложений!",
+      "image": "coursesLogos/python.png",
+      "duration": "12 hours",
+      "level": "easy",
+      "language": "ru",
+      "direction": "it",
+      "category": "языки_программирования"
+    },
+    {
+      "id": 2,
+      "title": "Веб-разработка с использованием JavaScript",
+      "description": "Научитесь создавать интерактивные веб-приложения с использованием JavaScript.",
+      "image": "coursesLogos/js.png",
+      "duration": "10 hours",
+      "level": "normal",
+      "language": "ru",
+      "direction": "it",
+      "category": "веб-разработка"
+    },
+    {
+      "id": 3,
+      "title": "Основы маркетинга",
+      "description": "Познакомьтесь с основами маркетинга, изучите стратегии продвижения продуктов и услуг.",
+      "image": "coursesLogos/Marketing.png",
+      "duration": "8 hours",
+      "level": "easy",
+      "language": "ru",
+      "direction": "business",
+      "category": "Маркетинг"
+    },
+    {
+      "id": 4,
+      "title": "Подготовка к ЕГЭ по математике",
+      "description": "Подготовьтесь к ЕГЭ по математике с помощью этого курса, включающего теоретические материалы и практические задания.",
+      "image": "coursesLogos/Math.png",
+      "duration": "30 hours",
+      "level": "hard",
+      "language": "ru",
+      "direction": "ege",
+      "category": "Математика"
+    },
+    {
+      "id": 5,
+      "title": "Креативное письмо",
+      "description": "Научитесь писать креативные тексты, статьи и эссе с помощью этого увлекательного курса.",
+      "image": "coursesLogos/Letter.png",
+      "duration": "2 hours",
+      "level": "normal",
+      "language": "ru",
+      "direction": "creativity",
+      "category": "Письмо"
+    }
+  ]
+}
