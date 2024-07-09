@@ -132,4 +132,8 @@ body {
   margin: 0 auto;
   margin-top: 40px; /* Добавляем отступ сверху */
 }
+.card-header{
+  text-align: center;
+  font-size: 1.2rem;
+}
 </style>

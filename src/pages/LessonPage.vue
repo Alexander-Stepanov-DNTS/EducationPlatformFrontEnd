@@ -1,12 +1,11 @@
 <template>
   <div class="row">
     <div class="col-md-3 p-0">
-      <SideBar :courseContent="courseContent" :currentItemID="currentItem ? currentItem.id : null" @select-item="selectItem" />
+      <SideBar :courseContent="courseContent" :currentItemID="currentItem ? currentItem.prefixedID : null" @select-item="selectItem" />
     </div>
     <div class="col-md-9">
       <LessonContent v-if="currentItem && currentItem.type === 'lesson'" :lesson="currentItem" />
-      <TestContent v-if="currentItem && currentItem.type === 'test'" :test="currentItem" />
-      <p v-else>Loading...</p>
+      <TestContent v-if="currentItem && currentItem.type === 'quiz'" :test="currentItem" />
     </div>
   </div>
 </template>
@@ -19,42 +18,95 @@ import axios from 'axios';
 
 export default {
   name: 'LessonPage',
-  props: ['itemID'],
+  props: ['itemID', 'itemType'],
   data() {
     return {
       courseContent: [],
       currentItem: null,
-      loading: true
+      loading: true,
+      courseID: null
     };
   },
   methods: {
+    async fetchCurrentItem() {
+      try {
+        let response;
+        if(this.itemType === "quiz"){
+          response = await axios.get(`http://localhost:8080/quizzes/${this.itemID}`, {
+            withCredentials: true
+          });
+        }
+        else {
+          response = await axios.get(`http://localhost:8080/${this.itemType}s/${this.itemID}`, {
+            withCredentials: true
+          });
+        }
+        this.currentItem = response.data;
+        this.courseID = this.currentItem.course.id;
+        this.fetchCourseContent();
+      } catch (error) {
+        console.error('Ошибка при получении данных текущего элемента:', error);
+        this.loading = false;
+      }
+    },
     async fetchCourseContent() {
       try {
-        const response = await axios.get('/testJSON/LessonContent.json');
-        this.courseContent = response.data.courseContent;
+        const [lessonsResponse, quizzesResponse] = await Promise.all([
+          axios.get(`http://localhost:8080/lessons/course/${this.courseID}`),
+          axios.get(`http://localhost:8080/quizzes/course/${this.courseID}`)
+        ]);
+        const lessonsData = lessonsResponse.data;
+        const quizzesData = quizzesResponse.data;
+
+        const lessons = lessonsData.map(lesson => ({
+          ...lesson,
+          type: 'lesson',
+          prefixedID: `lesson-${lesson.id}`
+        }));
+
+        const quizzes = await Promise.all(quizzesData.map(async quiz => {
+          const questionsResponse = await axios.get(`http://localhost:8080/quizzes/${quiz.id}/questions`);
+          const questionsData = questionsResponse.data;
+
+          const questions = await Promise.all(questionsData.map(async question => {
+            const answersResponse = await axios.get(`http://localhost:8080/quiz-questions/${question.id}/answers`);
+            const answersData = answersResponse.data;
+            return { ...question, answers: answersData };
+          }));
+
+          return {
+            ...quiz,
+            type: 'quiz',
+            prefixedID: `quiz-${quiz.id}`,
+            name: quiz.title,
+            questions
+          };
+        }));
+
+        this.courseContent = [...lessons, ...quizzes].sort((a, b) => a.courseOrder - b.courseOrder);
         this.loading = false;
         this.loadItem();
       } catch (error) {
-        console.error('Error loading course content:', error);
+        console.error('Ошибка при получении данных о курсе:', error);
         this.loading = false;
       }
     },
     loadItem() {
       if (this.courseContent && this.courseContent.length > 0) {
-        const itemID = parseInt(this.itemID);
-        this.currentItem = this.courseContent.find(item => item.id === itemID) || null;
+        const itemID = `${this.itemType}-${this.itemID}`;
+        this.currentItem = this.courseContent.find(item => item.prefixedID === itemID) || null;
       }
     },
     selectItem(item) {
-      this.$router.push(`/content/${item.id}`);
+      this.$router.push(`/content/${item.type}/${item.id}`);
     }
   },
   watch: {
-    itemID: 'loadItem'
+    itemID: 'loadItem',
+    itemType: 'loadItem'
   },
   mounted() {
-    console.log(this.itemID);
-    this.fetchCourseContent();
+    this.fetchCurrentItem();
   },
   components: {
     SideBar,

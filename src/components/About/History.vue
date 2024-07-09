@@ -14,6 +14,9 @@ export default {
 </script>
 
 <style scoped>
+h2 {
+  text-align: center;
+}
 .history {
   background-color: #ffffff;
   padding-top: 5rem;

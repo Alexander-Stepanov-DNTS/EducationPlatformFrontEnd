@@ -1,10 +1,22 @@
+<!--<template>-->
+<!--  <div>-->
+<!--    <div class="section-title">Отзывы студентов</div>-->
+<!--    <div class="reviews">-->
+<!--      <div class="review" v-for="review in reviews" :key="review.name">-->
+<!--        <h5>{{ review.name }}</h5>-->
+<!--        <p>{{ review.text }}</p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</template>-->
 <template>
   <div>
     <div class="section-title">Отзывы студентов</div>
     <div class="reviews">
-      <div class="review" v-for="review in reviews" :key="review.name">
-        <h5>{{ review.name }}</h5>
-        <p>{{ review.text }}</p>
+      <div class="review" v-for="review in reviews" :key="review.id">
+        <h5>{{ review.user.emailAddress }}</h5>
+        <p>{{ review.reviewText }}</p>
+        <small>{{ new Date(review.createdDate).toLocaleDateString() }}</small>
       </div>
     </div>
   </div>

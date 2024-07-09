@@ -14,6 +14,9 @@ export default {
 </script>
 
 <style scoped>
+h2 {
+  text-align: center;
+}
 .mission {
   background-color: #f8f9fa;
   padding-top: 5rem;

@@ -1,18 +1,15 @@
 <template>
-  <div>
+  <div v-if="lesson">
     <div class="header">
-      <h1>{{ lesson.title }}</h1>
-      <p>Краткое описание или цель урока.</p>
-      <div class="progress">
-        <div class="progress-bar" role="progressbar" :style="{ width: progressWidth }" :aria-valuenow="progress" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
-      </div>
+      <h1>{{ lesson.name }}</h1>
+      <p>{{ lesson.lessonDetails }}</p>
     </div>
 
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Видео урока</h5>
         <div class="video-container">
-          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+          <iframe :src="embedVideoUrl" frameborder="0" allowfullscreen></iframe>
         </div>
       </div>
     </div>
@@ -20,16 +17,7 @@
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Описание урока</h5>
-        <p>Подробное описание содержания урока, основные темы и цели.</p>
-        <p>Дополнительные материалы и ресурсы, доступные для скачивания.</p>
-      </div>
-    </div>
-
-    <div class="comment-section">
-      <h4>Комментарии</h4>
-      <div class="comment" v-for="comment in comments" :key="comment.id">
-        <h5>{{ comment.author }}</h5>
-        <p>{{ comment.text }}</p>
+        <p>{{ lesson.lessonDetails }}</p>
       </div>
     </div>
 
@@ -58,12 +46,14 @@ export default {
     };
   },
   computed: {
-    progress() {
-      // Пример вычисления прогресса
-      return 50;
-    },
-    progressWidth() {
-      return this.progress + '%';
+    embedVideoUrl() {
+      const videoUrl = this.lesson.videoUrl;
+      const videoId = videoUrl.split('v=')[1];
+      const ampersandPosition = videoId.indexOf('&');
+      if (ampersandPosition !== -1) {
+        return `https://www.youtube.com/embed/${videoId.substring(0, ampersandPosition)}`;
+      }
+      return `https://www.youtube.com/embed/${videoId}`;
     }
   },
   methods: {
@@ -138,10 +128,6 @@ export default {
   border-radius: 20px;
   padding: 20px;
   background-color: #e6f2ff;
-}
-
-.comment {
-  margin-bottom: 20px;
 }
 
 .comment h5 {

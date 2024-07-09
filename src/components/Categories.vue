@@ -5,15 +5,8 @@
       <div class="card-container">
         <div class="card card-category" v-for="direction in directions" :key="direction.id" @click="navigateTo(direction.link)">
           <div class="card-body">
-            <h5>{{ direction.title }}</h5>
+            <h5>{{ direction.name }}</h5>
             <p>{{ direction.description }}</p>
-            <div class="subcategories">
-              <ul>
-                <li v-for="subcategory in direction.subcategories" :key="subcategory">
-                  <a href="#">{{ subcategory }}</a>
-                </li>
-              </ul>
-            </div>
           </div>
         </div>
       </div>
@@ -22,60 +15,33 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "CourseDirections",
   data() {
     return {
-      directions: [
-        {
-          id: 1,
-          title: "Информационные технологии",
-          description: "Описание направления",
-          link: "it_courses.html",
-          subcategories: ["Языки программирования", "Веб-разработка", "Аналитика данных", "Тестирование ПО"]
-        },
-        {
-          id: 2,
-          title: "Иностранные языки",
-          description: "Курсы по изучению языков",
-          link: "languages_courses.html",
-          subcategories: ["Английский", "Немецкий", "Французский", "Испанский"]
-        },
-        {
-          id: 3,
-          title: "Бизнес и менеджмент",
-          description: "Курсы по бизнесу и менеджменту",
-          link: "business_courses.html",
-          subcategories: ["Маркетинг", "Управление проектами", "Финансы", "Предпринимательство"]
-        },
-        {
-          id: 4,
-          title: "Подготовка к ЕГЭ",
-          description: "Курсы для подготовки к ЕГЭ",
-          link: "ege_courses.html",
-          subcategories: ["Математика", "Русский язык", "Физика", "История"]
-        },
-        {
-          id: 5,
-          title: "Творчество и дизайн",
-          description: "Курсы по творчеству и дизайну",
-          link: "creativity_courses.html",
-          subcategories: ["Дизайн", "Рисование", "Музыка", "Фотография"]
-        },
-        {
-          id: 6,
-          title: "Личностный рост",
-          description: "Курсы по личностному росту",
-          link: "personal_courses.html",
-          subcategories: ["Лидерство", "Тайм-менеджмент", "Карьера", "Психология"]
-        }
-      ]
+      directions: []
     };
   },
   methods: {
     navigateTo(link) {
       window.location.href = link;
+    },
+    async fetchCategories() {
+      try {
+        const response = await axios.get('http://localhost:8080/directions', {
+          withCredentials: true
+        });
+        this.directions = response.data;
+        console.log(this.directions);
+      } catch (error) {
+        console.error('Error loading Categories' , error);
+      }
     }
+  },
+  mounted() {
+    this.fetchCategories();
   }
 };
 </script>
@@ -111,27 +77,13 @@ export default {
   padding: 20px;
   background-color: #ffffff;
 }
-.subcategories {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-}
-.card:hover .subcategories {
-  display: block;
-}
 .card h5 {
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
   margin-bottom: 10px;
   font-size: 1.1rem;
   color: #3b5998;
+  text-align: center;
 }
 .card ul {
   list-style-type: none;
@@ -149,3 +101,48 @@ export default {
   color: #6a11cb;
 }
 </style>
+
+// directions: [
+//   {
+//     id: 1,
+//     title: "Информационные технологии",
+//     description: "Описание направления",
+//     link: "it_courses.html",
+//     subcategories: ["Языки программирования", "Веб-разработка", "Аналитика данных", "Тестирование ПО"]
+//   },
+//   {
+//     id: 2,
+//     title: "Иностранные языки",
+//     description: "Курсы по изучению языков",
+//     link: "languages_courses.html",
+//     subcategories: ["Английский", "Немецкий", "Французский", "Испанский"]
+//   },
+//   {
+//     id: 3,
+//     title: "Бизнес и менеджмент",
+//     description: "Курсы по бизнесу и менеджменту",
+//     link: "business_courses.html",
+//     subcategories: ["Маркетинг", "Управление проектами", "Финансы", "Предпринимательство"]
+//   },
+//   {
+//     id: 4,
+//     title: "Подготовка к ЕГЭ",
+//     description: "Курсы для подготовки к ЕГЭ",
+//     link: "ege_courses.html",
+//     subcategories: ["Математика", "Русский язык", "Физика", "История"]
+//   },
+//   {
+//     id: 5,
+//     title: "Творчество и дизайн",
+//     description: "Курсы по творчеству и дизайну",
+//     link: "creativity_courses.html",
+//     subcategories: ["Дизайн", "Рисование", "Музыка", "Фотография"]
+//   },
+//   {
+//     id: 6,
+//     title: "Личностный рост",
+//     description: "Курсы по личностному росту",
+//     link: "personal_courses.html",
+//     subcategories: ["Лидерство", "Тайм-менеджмент", "Карьера", "Психология"]
+//   }
+// ],

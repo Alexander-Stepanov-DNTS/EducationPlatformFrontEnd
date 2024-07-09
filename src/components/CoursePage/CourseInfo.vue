@@ -4,7 +4,10 @@
     <div class="course-description">
       {{ description }}
     </div>
-    <a href="#" class="btn btn-primary">Начать курс</a>
+    <div v-if="isEnrolled" class="enrolled-message">
+      Вы поступили на курс!
+    </div>
+    <a v-else @click.prevent="startCourse" class="btn btn-primary">Начать курс</a>
   </div>
 </template>
 
@@ -13,7 +16,22 @@ export default {
   name: 'CourseInfo',
   props: {
     title: String,
-    description: String
+    description: String,
+    isEnrolled: Boolean,
+    firstLessonId: Number,
+    firstLessonType: String
+  },
+  methods: {
+    startCourse() {
+      let type;
+      if(this.firstLessonType === "quiz") {type = "quiz"}
+      else {type = "lesson"}
+      if (this.firstLessonId && type) {
+        this.$router.push(`/content/${type}/${this.firstLessonId}`);
+      } else {
+        console.error('First lesson information is not available.');
+      }
+    }
   }
 }
 </script>

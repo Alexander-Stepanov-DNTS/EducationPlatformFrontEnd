@@ -6,10 +6,10 @@
           v-for="item in courseContent"
           :key="item.id"
           class="list-group-item"
-          :class="{ 'active': item.id === currentItemID }"
+          :class="{ 'active': item.prefixedID === currentItemID }"
           @click="$emit('select-item', item)"
       >
-        {{ item.title }} <span v-if="item.type === 'test'"> (Тест)</span>
+        {{ item.name }} <span v-if="item.type === 'quiz'"> (Тест)</span><span v-else> (Урок)</span>
       </li>
     </ul>
   </div>
@@ -24,8 +24,9 @@ export default {
       required: true
     },
     currentItemID: {
-      type: Number,
-      required: true
+      type: String,
+      required: false,
+      default: ''
     }
   }
 };

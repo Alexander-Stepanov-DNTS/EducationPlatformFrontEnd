@@ -6,6 +6,8 @@ import SearchResults from "@/pages/SearchResults.vue";
 import CoursePage from "@/pages/CoursePage.vue";
 import LessonPage from '@/pages/LessonPage.vue';
 import PersonalArea from "@/pages/PersonalArea.vue";
+import RegisterPage from "@/pages/RegisterPage.vue";
+import LoginPage from "@/pages/LoginPage.vue";
 
 const routes = [
     {
@@ -32,16 +34,29 @@ const routes = [
         props: true
     },
     {
-        path: '/content/:itemID',
+        path: '/content/:itemType/:itemID',
         name: 'LessonPage',
         component: LessonPage,
-        props: true
+        props: route => ({
+            itemID: Number(route.params.itemID),
+            itemType: route.params.itemType,
+        })
     },
     {
         path: '/PersonalArea',
         name: 'PersonalArea',
         component: PersonalArea,
         //props: true
+    },
+    {
+        path: '/register',
+        name: 'Register',
+        component: RegisterPage
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        component: LoginPage
     },
 ]
 const router = createRouter({

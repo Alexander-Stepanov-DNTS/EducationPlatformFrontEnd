@@ -16,7 +16,6 @@ export default {
 
 <style scoped>
 .hero-section {
-  //background: url() no-repeat center center;
   background-size: cover;
   color: white;
   padding: 150px 0;

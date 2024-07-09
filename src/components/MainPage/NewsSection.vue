@@ -63,6 +63,9 @@ export default {
 h2 {
   margin-bottom: 20px;
 }
+h5 {
+  text-align: center;
+}
 .news {
   padding-top: 5rem;
   padding-bottom: 5rem;

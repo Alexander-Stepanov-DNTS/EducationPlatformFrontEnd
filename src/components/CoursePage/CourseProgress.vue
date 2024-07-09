@@ -31,6 +31,7 @@ export default {
   },
   computed: {
     progressPercentage() {
+      console.log(this.completedLessons + " " + this.totalLessons);
       if (this.completedLessons === 0) {
         return 0;
       }

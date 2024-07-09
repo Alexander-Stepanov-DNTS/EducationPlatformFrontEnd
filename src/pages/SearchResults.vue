@@ -120,7 +120,10 @@ export default {
   methods: {
     async fetchCourses() {
       try {
-        const response = await axios.get('/testJSON/courseData.json');
+        // const response = await axios.get('/testJSON/courseData.json');
+        const response = await axios.get('http://localhost:8080/courses', {
+          withCredentials: true
+        });
         this.courses = response.data.courses;
         this.filteredCourses = this.courses;
         console.log('Courses fetched:', this.courses);

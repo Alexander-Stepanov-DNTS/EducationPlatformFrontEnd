@@ -24,8 +24,6 @@
     <!-- Партнеры -->
     <PartnersSection />
   </div>
-  <router-link to="/content/1">Перейти к уроку 1</router-link>
-  <router-link to="/content/3">Перейти к уроку 3</router-link>
 </template>
 
 <script>
@@ -69,21 +67,11 @@ p, a, span, div {
   color: #000000;
 }
 
-
 footer {
   background-color: #ffffff;
   color: #000000;
   padding: 20px 0;
   text-align: center;
-}
-
-.section {
-  background-color: #ffffff;
-}
-
-.btn {
-  background-color: #000000;
-  color: #ffffff;
 }
 
 .btn:hover {
