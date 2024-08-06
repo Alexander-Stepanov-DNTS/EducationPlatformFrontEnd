@@ -2,9 +2,9 @@
   <div>
     <div class="container" v-if="course">
       <CourseHeader :title="course.name"/>
-      <CourseInfo :title="course.name" :description="course.description" :isEnrolled="isEnrolled"
-                  :firstLessonId="firstLessonId" :firstLessonType="firstLessonType"/>
-      <CourseProgress :completedLessons="lessons.length" :totalLessons="sortedLessonsAndQuizzes.length"/>
+      <CourseInfo :title="course.name" :description="course.description" :isEnrolled="isEnrolled" :course="course"
+                  :firstLessonId="firstLessonId" :firstLessonType="firstLessonType" :user="this.user"/>
+      <CourseProgress :completedLessons="completedLessons" :totalLessons="sortedLessonsAndQuizzes.length"/>
       <div class="section-title">Описание курса</div>
       <div class="course-description">{{ course.details }}</div>
       <LessonList :items="sortedLessonsAndQuizzes"/>
@@ -18,10 +18,11 @@
 import CourseHeader from '@/components/CoursePage/CourseHeader.vue';
 import CourseInfo from '@/components/CoursePage/CourseInfo.vue';
 import LessonList from '@/components/CoursePage/LessonList.vue';
-import Instructor from '@/components/CoursePage/Instructor.vue';
 import ReviewList from '@/components/CoursePage/ReviewList.vue';
 import CourseProgress from '@/components/CoursePage/CourseProgress.vue';
 import CommentForm from '@/components/CoursePage/CommentForm.vue';
+import axios from "axios";
+import {mapGetters} from "vuex";
 
 export default {
   name: 'CoursePage',
@@ -29,10 +30,9 @@ export default {
     CourseHeader,
     CourseInfo,
     LessonList,
-    Instructor,
     ReviewList,
     CourseProgress,
-    CommentForm
+    CommentForm,
   },
   props: {
     courseID: {
@@ -48,28 +48,14 @@ export default {
       reviews: [],
       isEnrolled: false,
       firstLessonId: null,
-      firstLessonType: null
+      firstLessonType: null,
+      completedLessons: 0
     };
   },
   methods: {
-    async beforeRouteEnter(to, from, next) {
-      try {
-        const response = await fetch('http://localhost:8080/protected-endpoint', {
-          credentials: 'include'
-        });
-        if (response.ok) {
-          next();
-        } else {
-          next('/login');
-        }
-      } catch (error) {
-        console.error('Ошибка:', error);
-        next('/login');
-      }
-    },
     async fetchCourseData() {
       try {
-        const [courseResponse, lessonsResponse, quizzesResponse, reviewsResponse, isEnrolled] = await Promise.all([
+        const [courseResponse, lessonsResponse, quizzesResponse, reviewsResponse, isEnrolled, enrolmentResponce] = await Promise.all([
           fetch(`http://localhost:8080/courses/${this.courseID}`, {
             credentials: 'include'
           }),
@@ -84,6 +70,9 @@ export default {
           }),
           fetch(`http://localhost:8080/enrolments/isEnrolled?courseId=${this.courseID}&studentId=${this.getStudentId()}`, {
             credentials: 'include'
+          }),
+          fetch(`http://localhost:8080/enrolments/${this.courseID}/${this.getStudentId()}`, {
+            credentials: 'include'
           })
         ]);
 
@@ -91,17 +80,21 @@ export default {
         const lessonsData = await lessonsResponse.json();
         const quizzesData = await quizzesResponse.json();
         const reviewsData = await reviewsResponse.json();
+        const enrolled = await isEnrolled.json();
+        const enrolment = await enrolmentResponce.json();
 
         this.course = courseData;
         this.lessons = lessonsData;
         this.quizzes = quizzesData.map(quiz => ({
           ...quiz,
-          type: 'quiz', // Добавляем тип, чтобы отличать тесты от уроков
+          type: 'quiz',
           name: quiz.title,
           lessonDetails: quiz.description,
           courseOrder: quiz.courseOrder
         }));
         this.reviews = reviewsData;
+        this.isEnrolled = enrolled;
+        this.completedLessons = enrolment.progress;
 
         const sortedContent = this.sortedLessonsAndQuizzes;
 
@@ -115,15 +108,13 @@ export default {
       }
     },
     getStudentId() {
-      // Получение ID студента из вашего метода аутентификации
-      return 1; // замените на реальный метод получения ID студента
+      return this.user.id;
     },
     async handleCommentSubmit(comment) {
       try {
         const commentData = {
           user: {
-            //id: this.userID
-            id: 1 //Заглушка
+            id: this.getStudentId()
           },
           course: {
             id: this.courseID
@@ -132,18 +123,12 @@ export default {
           score: comment.score
         };
 
-        const response = await fetch(`http://localhost:8080/reviews`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(commentData),
+        const response = await axios.post('http://localhost:8080/reviews', commentData, {
+          withCredentials: true
         });
 
-        if (response.ok) {
-          const createdReview = await response.json();
-          this.reviews.push(createdReview);
+        if (response.status === 200) {
+          this.reviews.push(response.data);
         } else {
           console.error('Ошибка при отправке комментария');
         }
@@ -155,9 +140,14 @@ export default {
   computed: {
     sortedLessonsAndQuizzes() {
       return [...this.lessons, ...this.quizzes].sort((a, b) => a.courseOrder - b.courseOrder);
-    }
+    },
+    ...mapGetters({
+      isAuthenticated: 'isAuthenticated',
+      user: 'user',
+    }),
   },
   mounted() {
+    this.$store.dispatch('checkAuth');
     this.fetchCourseData();
   }
 };

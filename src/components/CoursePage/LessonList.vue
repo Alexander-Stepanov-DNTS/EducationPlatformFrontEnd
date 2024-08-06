@@ -1,64 +1,3 @@
-<!--&lt;!&ndash;<template>&ndash;&gt;-->
-<!--&lt;!&ndash;  <div>&ndash;&gt;-->
-<!--&lt;!&ndash;    <div class="section-title">Программа курса</div>&ndash;&gt;-->
-<!--&lt;!&ndash;    <div class="lesson" v-for="lesson in lessons" :key="lesson.title">&ndash;&gt;-->
-<!--&lt;!&ndash;      <img :src="lesson.icon" alt="icon">&ndash;&gt;-->
-<!--&lt;!&ndash;      <div>&ndash;&gt;-->
-<!--&lt;!&ndash;        <h5>{{ lesson.title }}</h5>&ndash;&gt;-->
-<!--&lt;!&ndash;        <p>{{ lesson.description }}</p>&ndash;&gt;-->
-<!--&lt;!&ndash;      </div>&ndash;&gt;-->
-<!--&lt;!&ndash;    </div>&ndash;&gt;-->
-<!--&lt;!&ndash;  </div>&ndash;&gt;-->
-<!--&lt;!&ndash;</template>&ndash;&gt;-->
-
-
-<!--<template>-->
-<!--  <div>-->
-<!--    <div class="section-title">Программа курса</div>-->
-<!--    <div class="lesson" v-for="lesson in lessons" :key="lesson.id">-->
-<!--      <img :src="lesson.icon || 'default-icon.png'" alt="icon">-->
-<!--      <div>-->
-<!--        <h5>{{ lesson.name }}</h5>-->
-<!--        <p>{{ lesson.lessonDetails }}</p>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</template>-->
-
-<!--<script>-->
-<!--export default {-->
-<!--  name: 'LessonList',-->
-<!--  props: {-->
-<!--    lessons: Array-->
-<!--  }-->
-<!--}-->
-<!--</script>-->
-
-<!--<style scoped>-->
-<!--.section-title {-->
-<!--  font-size: 1.5rem;-->
-<!--  margin-top: 40px;-->
-<!--  margin-bottom: 20px;-->
-<!--  color: #3b5998;-->
-<!--}-->
-<!--.lesson {-->
-<!--  margin-bottom: 20px;-->
-<!--  display: flex;-->
-<!--  align-items: center;-->
-<!--}-->
-<!--.lesson img {-->
-<!--  width: 50px;-->
-<!--  height: 50px;-->
-<!--  margin-right: 15px;-->
-<!--}-->
-<!--.lesson h5 {-->
-<!--  margin-bottom: 10px;-->
-<!--}-->
-<!--.lesson p {-->
-<!--  margin-bottom: 5px;-->
-<!--}-->
-<!--</style>-->
-
 <template>
   <div>
     <div v-for="item in sortedItems" :key="item.id" class="lesson-item">
@@ -89,9 +28,9 @@ export default {
   methods: {
     getIcon(type) {
       if (type === 'quiz') {
-        return 'bi bi-book'; // Замените на реальный путь к иконке урока
+        return 'bi bi-book';
       } else {
-        return 'bi bi-pen'; // Замените на реальный путь к иконке теста
+        return 'bi bi-pen';
       }
     }
   },
@@ -113,7 +52,7 @@ p {
   margin-bottom: 15px;
 }
 .lesson-icon {
-  font-size: 28px; /* Увеличение размера иконки */
+  font-size: 28px;
   margin-right: 15px;
 }
 .lesson-content {

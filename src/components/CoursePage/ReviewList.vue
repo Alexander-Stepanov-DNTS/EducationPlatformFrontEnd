@@ -1,14 +1,3 @@
-<!--<template>-->
-<!--  <div>-->
-<!--    <div class="section-title">Отзывы студентов</div>-->
-<!--    <div class="reviews">-->
-<!--      <div class="review" v-for="review in reviews" :key="review.name">-->
-<!--        <h5>{{ review.name }}</h5>-->
-<!--        <p>{{ review.text }}</p>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</template>-->
 <template>
   <div>
     <div class="section-title">Отзывы студентов</div>

@@ -10,7 +10,7 @@
             <form @submit.prevent="login">
               <div class="form-group form-control-icon">
                 <label for="email">Адрес электронной почты</label>
-                <input type="email" class="form-control" v-model="email" id="email" placeholder="Введите ваш email" required>
+                <input type="email" class="form-control" v-model="email_address" id="email" placeholder="Введите ваш email" required>
                 <i class="fa fa-envelope"></i>
               </div>
               <div class="form-group form-control-icon">
@@ -35,14 +35,14 @@ export default {
   name: 'LoginPage',
   data() {
     return {
-      email: '',
+      email_address: '',
       password: ''
     };
   },
   methods: {
     async login() {
       try {
-        console.log(this.email, this.password)
+        console.log(this.email_address, this.password)
         const response = await fetch('http://localhost:8080/auth/login', {
           method: 'POST',
           headers: {
@@ -50,15 +50,13 @@ export default {
           },
           credentials: 'include', // Включаем куки
           body: JSON.stringify({
-            email: this.email,
+            email_address: this.email_address,
             password: this.password
           })
         });
         if (response.ok) {
-          const data = await response.json();
-          console.log(data);
-          alert('Вход выполнен успешно');
-          // Обработка успешного входа, например, сохранение токена и переход на другую страницу
+          this.$store.dispatch('checkAuth');
+          this.$router.push('/');
         } else {
           alert('Ошибка при входе');
         }

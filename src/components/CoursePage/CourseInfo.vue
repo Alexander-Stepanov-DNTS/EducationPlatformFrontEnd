@@ -6,12 +6,17 @@
     </div>
     <div v-if="isEnrolled" class="enrolled-message">
       Вы поступили на курс!
+      <div>
+        <a @click.prevent="continueCourse" class="btn btn-primary">Продолжить курс</a>
+      </div>
     </div>
     <a v-else @click.prevent="startCourse" class="btn btn-primary">Начать курс</a>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: 'CourseInfo',
   props: {
@@ -19,10 +24,12 @@ export default {
     description: String,
     isEnrolled: Boolean,
     firstLessonId: Number,
-    firstLessonType: String
+    firstLessonType: String,
+    course: Object,
+    user: Object
   },
   methods: {
-    startCourse() {
+    continueCourse() {
       let type;
       if(this.firstLessonType === "quiz") {type = "quiz"}
       else {type = "lesson"}
@@ -30,6 +37,41 @@ export default {
         this.$router.push(`/content/${type}/${this.firstLessonId}`);
       } else {
         console.error('First lesson information is not available.');
+      }
+    },
+    async startCourse() {
+      let type;
+      if(this.firstLessonType === "quiz") {type = "quiz"}
+      else {type = "lesson"}
+
+      try {
+        const course = JSON.parse(JSON.stringify(this.course));
+        const student = JSON.parse(JSON.stringify(this.user));
+        student.role = {
+          id:3,
+          name: "Студент"
+        }
+        const enrolmentDto = {
+          course: course,
+          student: student,
+          enrolmentDatetime: new Date().toISOString(),
+          completedDatetime: null,
+          isAuthor: false,
+          progress: 0
+        };
+
+        console.log(enrolmentDto);
+
+        const response = await axios.post('http://localhost:8080/enrolments', enrolmentDto, { withCredentials: true });
+
+        if (response.status === 200) {
+          console.log('User enrolled in course successfully.');
+          this.$router.push(`/content/${type}/${this.firstLessonId}`);
+        } else {
+          console.error('Failed to enroll in course.');
+        }
+      } catch (error) {
+        console.error('Error enrolling in course:', error);
       }
     }
   }

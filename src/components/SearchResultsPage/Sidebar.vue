@@ -1,10 +1,8 @@
 <template>
-  <div class="card search-bar">
-    <div class="card-header">
-      Поиск курсов
-    </div>
-    <div class="card-body">
-      <form @submit.prevent="submitForm">
+  <div class="bg-light border-right p-3" id="sidebar-wrapper">
+    <div class="sidebar-heading">Фильтры</div>
+    <div class="list-group list-group-flush">
+      <div class="search-form">
         <div class="form-group">
           <label for="keywords">Ключевые слова</label>
           <input type="text" class="form-control" id="keywords" v-model="form.keywords" placeholder="Введите ключевые слова для поиска">
@@ -30,14 +28,21 @@
             </option>
           </select>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Найти курсы</button>
-      </form>
+        <button type="button" class="btn btn-primary btn-block" @click="submitForm">Найти курсы</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    initialFilters: {
+      type: Object,
+      required: false,
+      default: () => ({})
+    }
+  },
   data() {
     return {
       form: {
@@ -47,6 +52,13 @@ export default {
       },
       categories: []
     };
+  },
+  watch: {
+    'form.direction': 'updateCategories',
+    initialFilters: {
+      handler: 'applyInitialFilters',
+      immediate: true
+    }
   },
   methods: {
     updateCategories() {
@@ -61,78 +73,39 @@ export default {
       this.categories = categoriesMap[this.form.direction] || [];
     },
     submitForm() {
-      this.$router.push({
-        name: 'SearchResults',
-        query: {
-          keywords: this.form.keywords,
-          direction: this.form.direction,
-          category: this.form.category
-        }
-      });
+      this.$emit('apply-filters', this.form);
+    },
+    applyInitialFilters() {
+      if (this.initialFilters) {
+        this.form.keywords = this.initialFilters.keywords || '';
+        this.form.direction = this.initialFilters.direction || '';
+        // this.updateCategories();
+        this.form.category = this.initialFilters.category || '';
+        this.updateCategories();
+      }
     }
+  },
+  mounted() {
+    this.applyInitialFilters();
   }
 };
 </script>
 
 <style scoped>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
-  color: #333;
-  margin: 0;
-  padding: 0;
+#sidebar-wrapper {
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
 }
-.card {
-  border: none;
-  border-radius: 20px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
-  cursor: pointer;
+.sidebar-heading {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.btn-block {
   width: 100%;
 }
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-}
-.card-body {
-  padding: 20px;
-  background-color: #ffffff;
-}
-.card:hover {
-  display: block;
-}
-.card h5 {
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-  font-size: 1.1rem;
-  color: #3b5998;
-}
-.card ul {
-  list-style-type: none;
-  padding: 0;
-}
-.card ul li {
-  margin-bottom: 10px;
-}
-.card ul li a {
-  color: #333;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-.card ul li a:hover {
-  color: #6a11cb;
-}
-.search-bar {
-  margin-top: 20px;
-}
-.card {
-  max-width: 60%;
-  margin: 40px auto 0;
-}
-.card-header{
-  text-align: center;
-  font-size: 1.2rem;
+.search-form {
+  margin-bottom: 20px;
 }
 </style>

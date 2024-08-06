@@ -33,16 +33,12 @@ export default {
   },
   methods: {
     submitComment() {
-      // Создаем объект с данными комментария
       const comment = {
         text: this.commentText,
         score: this.rating,
-        //date: new Date().toISOString()
       };
       console.log(this.rating);
-      // Отправляем событие с данными комментария наверх
       this.$emit('submit-comment', comment);
-      // Очищаем форму после отправки
       this.commentText = '';
       this.rating = '';
     }

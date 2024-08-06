@@ -7,9 +7,8 @@
           <h5>О платформе</h5>
           <ul class="list-unstyled">
             <li><a href="#" class="text-white" @click.prevent="$router.push('/home')">Главная</a></li>
-            <li><a href="#" class="text-white" @click.prevent="$router.push('/about')">О нас</a></li>
-            <li><a href="#" class="text-white" @click.prevent="$router.push('/contacts')">Контакты</a></li>
-            <li><a href="#" class="text-white" @click.prevent="$router.push('/privacy')">Политика конфиденциальности</a></li>
+            <li><a href="#" class="text-white" @click.prevent="$router.push('/AboutPage')">О нас</a></li>
+            <li><a href="#" class="text-white" @click.prevent="$router.push('/AboutPage')">Политика конфиденциальности</a></li>
           </ul>
         </div>
         <div class="col-md-4">
@@ -45,5 +44,8 @@ export default {
 }
 .footer a:hover {
   color: white;
+}
+p {
+  margin-bottom: 0;
 }
 </style>

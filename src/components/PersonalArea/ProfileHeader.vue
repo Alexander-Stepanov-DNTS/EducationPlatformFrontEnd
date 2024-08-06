@@ -1,9 +1,9 @@
 <template>
   <div class="profile-header">
-    <img src="C:\Users\Alex\WebstormProjects\education\public\avatar.jpg" alt="Profile Picture" class="profile-image">
+    <img src="/avatars/avatar.jpg" alt="Profile Picture" class="profile-image">
     <div class="profile-info">
-      <h2>{{ profile.name }}</h2>
-      <p>{{ profile.email }}</p>
+      <h2>{{ profile.login }}</h2>
+      <p>{{ profile.emailAddress }}</p>
     </div>
   </div>
 </template>
@@ -25,6 +25,9 @@ export default {
   display: flex;
   align-items: center;
   margin-bottom: 30px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 20px;
 }
 .profile-image {
   width: 100px;

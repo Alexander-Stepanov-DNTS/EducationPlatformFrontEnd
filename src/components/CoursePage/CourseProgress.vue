@@ -13,6 +13,9 @@
         {{ progressPercentage }}%
       </div>
     </div>
+    <div v-if="completedLessons === totalLessons" class="completion-message">
+      Вы успешно прошли этот курс!
+    </div>
   </div>
 </template>
 
@@ -62,7 +65,10 @@ export default {
   text-align: center;
   line-height: 30px;
 }
+.completion-message {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: green;
+  text-align: center;
+}
 </style>
-
-
-

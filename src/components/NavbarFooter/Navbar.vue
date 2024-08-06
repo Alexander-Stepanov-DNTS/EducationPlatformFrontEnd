@@ -4,34 +4,57 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" @click.prevent="$router.push('/')">Главная</a>
+          <a class="nav-link" @click.prevent="$router.push('/PersonalArea')">Личный кабинет</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" @click.prevent="$router.push('/FindCourse')">Поиск курсов</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" @click.prevent="$router.push('/About')">О нас</a>
+          <a class="nav-link" @click.prevent="$router.push('/AboutPage')">О нас</a>
         </li>
-<!--        <li class="nav-item">-->
-<!--          <a class="nav-link" @click.prevent="$router.push('/contacts')">Контакты</a>-->
-<!--        </li>-->
       </ul>
-      <a href="#" class="btn btn-login" id="login-button" style="display: none;" @click.prevent="$router.push('/login')">Войти</a>
+      <div v-if="isAuthenticated">
+        <a href="#" class="btn btn-login" @click.prevent="logout">Выйти</a>
+      </div>
+      <div v-else>
+        <a href="#" class="btn btn-login" @click.prevent="$router.push('/login')">Войти</a>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import axios from 'axios';
+
 export default {
-  mounted() {
-    const isAuthenticated = false; // замените это логикой аутентификации
-    if (isAuthenticated) {
-      document.getElementById('user-menu').style.display = 'block';
-    } else {
-      document.getElementById('login-button').style.display = 'block';
+  computed: {
+    ...mapGetters({
+      isAuthenticated: 'isAuthenticated',
+      user: 'user',
+    }),
+  },
+  methods: {
+    async logout() {
+      try {
+        const response = await axios.post('http://localhost:8080/auth/logout', {}, {withCredentials: true});
+        if (response.status === 200) {
+          this.$store.commit('SET_AUTH', {
+            isAuthenticated: false,
+            user: null,
+            error: null,
+          });
+          this.$router.push('/');
+        }
+      } catch (error) {
+        console.error('Ошибка при выходе:', error);
+      }
     }
+  },
+  mounted() {
+    this.$store.dispatch('checkAuth');
   }
-}
+};
 </script>
 
 <style scoped>

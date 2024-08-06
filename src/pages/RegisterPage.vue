@@ -9,18 +9,13 @@
           <div class="card-body">
             <form @submit.prevent="register">
               <div class="form-group form-control-icon">
-                <label for="firstName">Имя</label>
-                <input type="text" class="form-control" v-model="firstName" id="firstName" placeholder="Введите ваше имя" required>
-                <i class="fa fa-user"></i>
-              </div>
-              <div class="form-group form-control-icon">
-                <label for="lastName">Фамилия</label>
-                <input type="text" class="form-control" v-model="lastName" id="lastName" placeholder="Введите вашу фамилию" required>
+                <label for="firstName">Логин</label>
+                <input type="text" class="form-control" v-model="login" id="firstName" placeholder="Введите ваше имя" required>
                 <i class="fa fa-user"></i>
               </div>
               <div class="form-group form-control-icon">
                 <label for="email">Адрес электронной почты</label>
-                <input type="email" class="form-control" v-model="email" id="email" placeholder="Введите ваш email" required>
+                <input type="email" class="form-control" v-model="email_address" id="email" placeholder="Введите ваш email" required>
                 <i class="fa fa-envelope"></i>
               </div>
               <div class="form-group form-control-icon">
@@ -32,20 +27,6 @@
                 <label for="confirmPassword">Подтвердите пароль</label>
                 <input type="password" class="form-control" v-model="confirmPassword" id="confirmPassword" placeholder="Подтвердите пароль" required>
                 <i class="fa fa-lock"></i>
-              </div>
-              <div class="form-group form-control-icon">
-                <label for="phone">Телефонный номер</label>
-                <input type="tel" class="form-control" v-model="phone" id="phone" placeholder="Введите ваш номер телефона" required>
-                <i class="fa fa-phone"></i>
-              </div>
-              <div class="form-group form-control-icon">
-                <label for="birthDate">Дата рождения</label>
-                <input type="date" class="form-control" v-model="birthDate" id="birthDate" required>
-                <i class="fa fa-calendar-alt"></i>
-              </div>
-              <div class="form-group">
-                <label for="profilePicture">Фотография профиля (опционально)</label>
-                <input type="file" class="form-control-file" @change="handleFileUpload" id="profilePicture">
               </div>
               <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
             </form>
@@ -61,42 +42,34 @@ export default {
   name: 'RegisterPage',
   data() {
     return {
-      firstName: '',
-      lastName: '',
-      email: '',
+      login: '',
+      email_address: '',
       password: '',
       confirmPassword: '',
-      phone: '',
-      birthDate: '',
-      profilePicture: null
     };
   },
   methods: {
-    handleFileUpload(event) {
-      this.profilePicture = event.target.files[0];
-    },
     async register() {
       if (this.password !== this.confirmPassword) {
         alert('Пароли не совпадают');
         return;
       }
 
-      const formData = new FormData();
-      formData.append('firstName', this.firstName);
-      formData.append('lastName', this.lastName);
-      formData.append('email', this.email);
-      formData.append('password', this.password);
-      formData.append('phone', this.phone);
-      formData.append('birthDate', this.birthDate);
-      if (this.profilePicture) {
-        formData.append('profilePicture', this.profilePicture);
-      }
+      const userData = {
+        login: this.login,
+        email_address: this.email_address,
+        password: this.password,
+      };
 
       try {
-        const response = await fetch('http://localhost:8080/api/register', {
+        const response = await fetch('http://localhost:8080/auth/register', {
           method: 'POST',
-          body: formData
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userData)
         });
+
         if (response.ok) {
           alert('Регистрация прошла успешно');
           this.$router.push('/login');
