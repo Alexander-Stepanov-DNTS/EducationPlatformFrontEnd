@@ -18,7 +18,7 @@
 <script>
 import SideBar from '@/components/SearchResultsPage/Sidebar.vue';
 import ListOfCourses from '@/components/SearchResultsPage/ListOfCourses.vue';
-import axios from 'axios';
+import {CourseService} from "@/services/CourseService.js";
 
 export default {
   name: 'SearchResults',
@@ -36,9 +36,7 @@ export default {
   methods: {
     async fetchCourses() {
       try {
-        const response = await axios.get('http://localhost:8080/courses', {
-          withCredentials: true
-        });
+        const response = await CourseService.fetchCourses();
         this.courses = response.data.courses;
         this.filteredCourses = this.courses;
         console.log('Courses fetched:', this.courses);

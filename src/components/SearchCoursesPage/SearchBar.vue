@@ -13,21 +13,14 @@
           <label for="direction">Направление</label>
           <select class="form-control" id="direction" v-model="form.direction" @change="updateCategories">
             <option value="">Выберите направление</option>
-            <option value="Информационные технологии">Информационные технологии</option>
-            <option value="Иностранные языки">Иностранные языки</option>
-            <option value="Бизнес и менеджмент">Бизнес и менеджмент</option>
-            <option value="Подготовка к ЕГЭ">Подготовка к ЕГЭ</option>
-            <option value="Творчество и дизайн">Творчество и дизайн</option>
-            <option value="Личностный рост">Личностный рост</option>
+            <option v-for="direction in directions" :key="direction.id" :value="direction.name">{{ direction.name }}</option>
           </select>
         </div>
         <div class="form-group">
           <label for="category">Категория</label>
           <select class="form-control" id="category" v-model="form.category">
             <option value="">Сначала выберите направление</option>
-            <option v-for="category in categories" :key="category" :value="category">
-              {{ category }}
-            </option>
+            <option v-for="category in categories" :key="category.id" :value="category.name">{{ category.name }}</option>
           </select>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Найти курсы</button>
@@ -37,6 +30,8 @@
 </template>
 
 <script>
+import {DirectionService} from "@/services/DirectionService.js";
+
 export default {
   data() {
     return {
@@ -45,20 +40,37 @@ export default {
         direction: '',
         category: ''
       },
-      categories: []
+      directions: [],
+      categories: [],
+      allCategories: []
     };
   },
   methods: {
+    async fetchInitialData() {
+      try {
+        const [directionsData, categoriesData] = await Promise.all([
+          DirectionService.fetchDirections(),
+          DirectionService.fetchCategories()
+        ]);
+
+        this.directions = directionsData;
+        this.allCategories = categoriesData;
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
+      console.log(this.allCategories);
+    },
     updateCategories() {
-      const categoriesMap = {
-        "Информационные технологии": ["Языки программирования", "Веб-разработка", "Аналитика данных", "Тестирование ПО"],
-        "Иностранные языки": ["Английский", "Немецкий", "Французский", "Испанский"],
-        "Бизнес и менеджмент": ["Маркетинг", "Управление проектами", "Финансы", "Предпринимательство"],
-        "Подготовка к ЕГЭ": ["Математика", "Русский язык", "Физика", "История"],
-        "Творчество и дизайн": ["Дизайн", "Рисование", "Музыка", "Фотография"],
-        "Личностный рост": ["Лидерство", "Тайм-менеджмент", "Карьера", "Психология"]
-      };
-      this.categories = categoriesMap[this.form.direction] || [];
+      if (this.form.direction) {
+        const selectedDirection = this.directions.find(direction => direction.name === this.form.direction);
+        if (selectedDirection) {
+          this.categories = this.allCategories.filter(category => category.direction.id === selectedDirection.id);
+        } else {
+          this.categories = [];
+        }
+      } else {
+        this.categories = [];
+      }
     },
     submitForm() {
       this.$router.push({
@@ -70,6 +82,9 @@ export default {
         }
       });
     }
+  },
+  mounted() {
+    this.fetchInitialData();
   }
 };
 </script>

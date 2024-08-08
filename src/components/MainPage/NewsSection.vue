@@ -12,7 +12,6 @@
               <h5 class="card-title">{{ news.title }}</h5>
               <p class="card-text">{{ news.description }}</p>
               <div class="d-flex justify-content-between align-items-center">
-                <a :href="news.link" class="btn btn-sm btn-outline-secondary">Читать далее</a>
                 <small class="text-muted">{{ news.date }}</small>
               </div>
             </div>
@@ -82,7 +81,7 @@ h5 {
 }
 .news .card-img-container {
   width: 100%;
-  height: 200px; /* Задаем фиксированную высоту для изображений */
+  height: 200px;
   overflow: hidden;
 }
 .news .card-img-top {

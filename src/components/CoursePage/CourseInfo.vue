@@ -16,6 +16,7 @@
 
 <script>
 import axios from "axios";
+import {CourseService} from "@/services/CourseService.js";
 
 export default {
   name: 'CourseInfo',
@@ -36,21 +37,19 @@ export default {
       if (this.firstLessonId && type) {
         this.$router.push(`/content/${type}/${this.firstLessonId}`);
       } else {
-        console.error('First lesson information is not available.');
+        alert('First lesson information is not available.');
       }
     },
     async startCourse() {
-      let type;
-      if(this.firstLessonType === "quiz") {type = "quiz"}
-      else {type = "lesson"}
+      let type = this.firstLessonType === 'quiz' ? 'quiz' : 'lesson';
 
       try {
         const course = JSON.parse(JSON.stringify(this.course));
         const student = JSON.parse(JSON.stringify(this.user));
         student.role = {
-          id:3,
+          id: 3,
           name: "Студент"
-        }
+        };
         const enrolmentDto = {
           course: course,
           student: student,
@@ -59,19 +58,11 @@ export default {
           isAuthor: false,
           progress: 0
         };
+        const response = await CourseService.startCourse(enrolmentDto);
 
-        console.log(enrolmentDto);
-
-        const response = await axios.post('http://localhost:8080/enrolments', enrolmentDto, { withCredentials: true });
-
-        if (response.status === 200) {
-          console.log('User enrolled in course successfully.');
-          this.$router.push(`/content/${type}/${this.firstLessonId}`);
-        } else {
-          console.error('Failed to enroll in course.');
-        }
+        this.$router.push(`/content/${type}/${this.firstLessonId}`);
       } catch (error) {
-        console.error('Error enrolling in course:', error);
+        alert('Error enrolling in course:');
       }
     }
   }

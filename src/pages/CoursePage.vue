@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="container" v-if="course">
-      <CourseHeader :title="course.name"/>
+      <div class="header">
+        <h1>Курс: {{ course.name }}</h1>
+      </div>
       <CourseInfo :title="course.name" :description="course.description" :isEnrolled="isEnrolled" :course="course"
                   :firstLessonId="firstLessonId" :firstLessonType="firstLessonType" :user="this.user"/>
       <CourseProgress :completedLessons="completedLessons" :totalLessons="sortedLessonsAndQuizzes.length"/>
@@ -21,8 +23,8 @@ import LessonList from '@/components/CoursePage/LessonList.vue';
 import ReviewList from '@/components/CoursePage/ReviewList.vue';
 import CourseProgress from '@/components/CoursePage/CourseProgress.vue';
 import CommentForm from '@/components/CoursePage/CommentForm.vue';
-import axios from "axios";
 import {mapGetters} from "vuex";
+import {CourseService} from "@/services/CourseService.js";
 
 export default {
   name: 'CoursePage',
@@ -55,53 +57,19 @@ export default {
   methods: {
     async fetchCourseData() {
       try {
-        const [courseResponse, lessonsResponse, quizzesResponse, reviewsResponse, isEnrolled, enrolmentResponce] = await Promise.all([
-          fetch(`http://localhost:8080/courses/${this.courseID}`, {
-            credentials: 'include'
-          }),
-          fetch(`http://localhost:8080/lessons/course/${this.courseID}`, {
-            credentials: 'include'
-          }),
-          fetch(`http://localhost:8080/quizzes/course/${this.courseID}`, {
-            credentials: 'include'
-          }),
-          fetch(`http://localhost:8080/reviews/course/${this.courseID}`, {
-            credentials: 'include'
-          }),
-          fetch(`http://localhost:8080/enrolments/isEnrolled?courseId=${this.courseID}&studentId=${this.getStudentId()}`, {
-            credentials: 'include'
-          }),
-          fetch(`http://localhost:8080/enrolments/${this.courseID}/${this.getStudentId()}`, {
-            credentials: 'include'
-          })
-        ]);
-
-        const courseData = await courseResponse.json();
-        const lessonsData = await lessonsResponse.json();
-        const quizzesData = await quizzesResponse.json();
-        const reviewsData = await reviewsResponse.json();
-        const enrolled = await isEnrolled.json();
-        const enrolment = await enrolmentResponce.json();
-
-        this.course = courseData;
-        this.lessons = lessonsData;
-        this.quizzes = quizzesData.map(quiz => ({
-          ...quiz,
-          type: 'quiz',
-          name: quiz.title,
-          lessonDetails: quiz.description,
-          courseOrder: quiz.courseOrder
-        }));
-        this.reviews = reviewsData;
-        this.isEnrolled = enrolled;
-        this.completedLessons = enrolment.progress;
+        const studentID = this.getStudentId();
+        const data = await CourseService.fetchCourseData(this.courseID, studentID);
+        this.course = data.course;
+        this.lessons = data.lessons;
+        this.quizzes = data.quizzes;
+        this.reviews = data.reviews;
+        this.isEnrolled = data.isEnrolled;
+        this.completedLessons = data.enrolment.progress;
 
         const sortedContent = this.sortedLessonsAndQuizzes;
-
         if (sortedContent.length > 0) {
           this.firstLessonId = sortedContent[0].id;
           this.firstLessonType = sortedContent[0].type;
-          console.log("TEST " + this.firstLessonId + this.firstLessonType)
         }
       } catch (error) {
         console.error('Ошибка при получении данных о курсе:', error);
@@ -113,20 +81,12 @@ export default {
     async handleCommentSubmit(comment) {
       try {
         const commentData = {
-          user: {
-            id: this.getStudentId()
-          },
-          course: {
-            id: this.courseID
-          },
+          user: { id: this.getStudentId() },
+          course: { id: this.courseID },
           reviewText: comment.text,
           score: comment.score
         };
-
-        const response = await axios.post('http://localhost:8080/reviews', commentData, {
-          withCredentials: true
-        });
-
+        const response = await CourseService.submitComment(commentData);
         if (response.status === 200) {
           this.reviews.push(response.data);
         } else {
@@ -154,6 +114,13 @@ export default {
 </script>
 
 <style scoped>
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.header h1 {
+  color: #333;
+}
 .container {
   max-width: 1200px;
   margin-top: 3%;

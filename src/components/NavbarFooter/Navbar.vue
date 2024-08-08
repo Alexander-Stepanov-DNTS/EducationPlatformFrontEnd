@@ -25,7 +25,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import axios from 'axios';
+import {AuthService} from "@/services/AuthService.js";
 
 export default {
   computed: {
@@ -37,15 +37,13 @@ export default {
   methods: {
     async logout() {
       try {
-        const response = await axios.post('http://localhost:8080/auth/logout', {}, {withCredentials: true});
-        if (response.status === 200) {
-          this.$store.commit('SET_AUTH', {
-            isAuthenticated: false,
-            user: null,
-            error: null,
-          });
-          this.$router.push('/');
-        }
+        await AuthService.logout();
+        this.$store.commit('SET_AUTH', {
+          isAuthenticated: false,
+          user: null,
+          error: null,
+        });
+        this.$router.push('/');
       } catch (error) {
         console.error('Ошибка при выходе:', error);
       }

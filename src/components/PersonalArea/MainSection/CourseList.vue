@@ -8,9 +8,6 @@
       <li class="list-group-item" v-for="course in courses" :key="course.id">
         <a href="#" @click.prevent="$router.push(`/course/${course.id}`)">{{ course.name }}</a>
         <p>{{ course.description }}</p>
-<!--        <div class="progress">-->
-<!--          <div class="progress-bar" role="progressbar" :style="{ width: progressPercentage(course) + '%' }" :aria-valuenow="progressPercentage(course)" aria-valuemin="0" aria-valuemax="100">{{ progressPercentage(course) }}%</div>-->
-<!--        </div>-->
       </li>
     </ul>
   </div>

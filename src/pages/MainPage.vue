@@ -24,7 +24,6 @@ export default {
     MainSection,
     SearchBar,
     Categories,
-    // PopularCourses,
     Features,
     SuccessStories,
     NewsSection,

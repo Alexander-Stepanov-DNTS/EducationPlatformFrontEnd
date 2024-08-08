@@ -33,6 +33,7 @@
 <script>
 import axios from "axios";
 import {mapGetters} from "vuex";
+import {LessonService} from "@/services/LessonService.js";
 
 export default {
   name: 'LessonContent',
@@ -77,8 +78,8 @@ export default {
   methods: {
     async checkLessonStatus() {
       try {
-        const response = await axios.get(`http://localhost:8080/student-lessons/check?studentId=${this.user.id}&lessonId=${this.lesson.id}`, { withCredentials: true });
-        this.isLessonCompleted = response.data;
+        const isCompleted = await LessonService.checkLessonStatus(this.user.id, this.lesson.id);
+        this.isLessonCompleted = isCompleted;
       } catch (error) {
         console.error('Error checking lesson status:', error);
       }
@@ -91,13 +92,8 @@ export default {
           completedDatetime: new Date().toISOString()
         };
 
-        const response = await axios.post('http://localhost:8080/student-lessons', studentLessonDto, { withCredentials: true });
-
-        if (response.status === 200) {
-          this.isLessonCompleted = true;
-        } else {
-          console.error('Failed to complete lesson');
-        }
+        await LessonService.completeLesson(studentLessonDto);
+        this.isLessonCompleted = true;
       } catch (error) {
         console.error('Error completing lesson:', error);
       }

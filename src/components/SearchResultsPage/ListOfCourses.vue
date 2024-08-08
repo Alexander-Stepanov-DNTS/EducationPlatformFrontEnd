@@ -18,9 +18,6 @@ export default {
       required: true
     }
   },
-  mounted() {
-    console.log('Courses received in ListOfCourses:', this.courses);
-  }
 };
 </script>
 

@@ -39,8 +39,8 @@
 </template>
 
 <script>
-import axios from 'axios';
 import {mapGetters} from "vuex";
+import {TestService} from "@/services/TestService.js";
 
 export default {
   name: 'TestContent',
@@ -69,62 +69,41 @@ export default {
   methods: {
     async fetchQuestions() {
       try {
-        const response = await axios.get(`http://localhost:8080/quizzes/${this.test.id}/questions`, { withCredentials: true });
-        const questions = response.data;
-        for (const question of questions) {
-          const answersResponse = await axios.get(`http://localhost:8080/quiz-questions/${question.id}/answers`, { withCredentials: true });
-          question.options = answersResponse.data;
-        }
-        this.questions = questions;
+        this.questions = await TestService.fetchQuestions(this.test.id);
         this.answers = {};
         this.result = null;
       } catch (error) {
-        console.error('Ошибка при получении вопросов:', error);
+        alert('Ошибка при получении вопросов');
       }
+      console.log(this.questions);
     },
     async checkTestStatus() {
       try {
-        const response = await axios.get(`http://localhost:8080/student-quiz-attempts/check?studentId=${this.user.id}&quizId=${this.test.id}`, { withCredentials: true });
-        this.isTestCompleted = response.data;
+        this.isTestCompleted = await TestService.checkTestStatus(this.user.id, this.test.id);
       } catch (error) {
-        console.error('Error checking test status:', error);
+        alert('Ошибка подгрузки данных.');
       }
     },
-    getStudentId() {
-      return this.user.id;
+    areAllQuestionsAnswered() {
+      return Object.keys(this.answers).length === this.questions.length;
     },
     async submitTest() {
-      if (Object.keys(this.answers).length !== this.questions.length) {
+      if (!this.areAllQuestionsAnswered()) {
         alert('Пожалуйста, ответьте на все вопросы.');
         return;
       }
 
-      let correctAnswers = 0;
-      for (const question of this.questions) {
-        const selectedAnswerId = this.answers[question.id];
-        const selectedOption = question.options.find(option => option.id === selectedAnswerId);
-        if (selectedOption && selectedOption.isCorrect) {
-          correctAnswers += 1;
-        }
+      const answers = {};
+      for (const questionId in this.answers) {
+        answers[questionId] = this.answers[questionId];
       }
-      this.result = correctAnswers;
-
-      const resultData = {
-        quiz: { id: this.test.id },
-        student: { id: this.user.id },
-        scoreAchieved: correctAnswers,
-      };
 
       try {
-        const response = await axios.post('http://localhost:8080/student-quiz-attempts', resultData, { withCredentials: true });
-
-        if (response.status === 200) {
-          this.isTestCompleted = true;
-        } else {
-          console.error('Ошибка при отправке результатов');
-        }
+        const response = await TestService.submitTest(this.user.id, this.test.id, answers);
+        this.result = response.scoreAchieved;
+        this.isTestCompleted = true;
       } catch (error) {
-        console.error('Ошибка при отправке результатов:', error);
+        alert('Ошибка при отправке результатов.');
       }
     },
     nextTest() {
@@ -133,7 +112,6 @@ export default {
         this.$emit('select-item', this.courseContent[nextIndex]);
       } else {
         alert('Это был последний урок')
-        console.log('Это был последний тест');
       }
     }
   },

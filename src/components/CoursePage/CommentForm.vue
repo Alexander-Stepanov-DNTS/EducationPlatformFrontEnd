@@ -37,7 +37,6 @@ export default {
         text: this.commentText,
         score: this.rating,
       };
-      console.log(this.rating);
       this.$emit('submit-comment', comment);
       this.commentText = '';
       this.rating = '';

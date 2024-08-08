@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import {DirectionService} from "@/services/DirectionService.js";
 
 export default {
   name: "CourseDirections",
@@ -30,13 +30,10 @@ export default {
     },
     async fetchCategories() {
       try {
-        const response = await axios.get('http://localhost:8080/directions', {
-          withCredentials: true
-        });
-        this.directions = response.data;
+        this.directions = await DirectionService.fetchDirections();
         console.log(this.directions);
       } catch (error) {
-        console.error('Error loading Categories' , error);
+        console.error('Error loading Categories', error);
       }
     }
   },

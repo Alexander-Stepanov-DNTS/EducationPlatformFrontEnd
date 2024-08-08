@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import { AuthService } from '@/services/AuthService';
+
 export default {
   name: 'LoginPage',
   data() {
@@ -43,26 +45,16 @@ export default {
     async login() {
       try {
         console.log(this.email_address, this.password)
-        const response = await fetch('http://localhost:8080/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include', // Включаем куки
-          body: JSON.stringify({
-            email_address: this.email_address,
-            password: this.password
-          })
-        });
-        if (response.ok) {
+        const response = await AuthService.login(this.email_address, this.password);
+        if (response.status === 200) {
           this.$store.dispatch('checkAuth');
           this.$router.push('/');
         } else {
-          alert('Ошибка при входе');
+          alert('Ошибка при входе номер 1');
         }
       } catch (error) {
         console.error('Ошибка:', error);
-        alert('Ошибка при входе');
+        alert('Ошибка при входе номер 2');
       }
     }
   }

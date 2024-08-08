@@ -38,6 +38,8 @@
 </template>
 
 <script>
+import {AuthService} from "@/services/AuthService.js";
+
 export default {
   name: 'RegisterPage',
   data() {
@@ -62,15 +64,9 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:8080/auth/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(userData)
-        });
+        const response = await AuthService.register(this.login, this.email_address, this.password);
 
-        if (response.ok) {
+        if (response.status === 200) {
           alert('Регистрация прошла успешно');
           this.$router.push('/login');
         } else {

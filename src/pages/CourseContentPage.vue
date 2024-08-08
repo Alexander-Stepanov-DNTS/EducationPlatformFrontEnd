@@ -26,7 +26,7 @@
 import SideBar from '@/components/CourseContentPage/CourseComponentSideBar.vue';
 import LessonContent from '@/components/CourseContentPage/LessonContent.vue';
 import TestContent from '@/components/CourseContentPage/TestContent.vue';
-import axios from 'axios';
+import {CourseService as CourseContentService} from "@/services/CourseService.js";
 
 export default {
   name: 'CourseContentPage',
@@ -43,18 +43,7 @@ export default {
   methods: {
     async fetchCurrentItem() {
       try {
-        let response;
-        if(this.itemType === "quiz"){
-          response = await axios.get(`http://localhost:8080/quizzes/${this.itemID}`, {
-            withCredentials: true
-          });
-        }
-        else {
-          response = await axios.get(`http://localhost:8080/${this.itemType}s/${this.itemID}`, {
-            withCredentials: true
-          });
-        }
-        this.currentItem = response.data;
+        this.currentItem = await CourseContentService.fetchCurrentItem(this.itemID, this.itemType);
         this.courseID = this.currentItem.course.id;
         await this.fetchCourseContent();
       } catch (error) {
@@ -64,39 +53,7 @@ export default {
     },
     async fetchCourseContent() {
       try {
-        const [lessonsResponse, quizzesResponse] = await Promise.all([
-          axios.get(`http://localhost:8080/lessons/course/${this.courseID}`, {withCredentials: true}),
-          axios.get(`http://localhost:8080/quizzes/course/${this.courseID}`, {withCredentials: true})
-        ]);
-        const lessonsData = lessonsResponse.data;
-        const quizzesData = quizzesResponse.data;
-
-        const lessons = lessonsData.map(lesson => ({
-          ...lesson,
-          type: 'lesson',
-          prefixedID: `lesson-${lesson.id}`
-        }));
-
-        const quizzes = await Promise.all(quizzesData.map(async quiz => {
-          const questionsResponse = await axios.get(`http://localhost:8080/quizzes/${quiz.id}/questions`, {withCredentials: true});
-          const questionsData = questionsResponse.data;
-
-          const questions = await Promise.all(questionsData.map(async question => {
-            const answersResponse = await axios.get(`http://localhost:8080/quiz-questions/${question.id}/answers`, {withCredentials: true});
-            const answersData = answersResponse.data;
-            return { ...question, answers: answersData };
-          }));
-
-          return {
-            ...quiz,
-            type: 'quiz',
-            prefixedID: `quiz-${quiz.id}`,
-            name: quiz.title,
-            questions
-          };
-        }));
-
-        this.courseContent = [...lessons, ...quizzes].sort((a, b) => a.courseOrder - b.courseOrder);
+        this.courseContent = await CourseContentService.fetchCourseContent(this.courseID);
         this.loading = false;
         this.loadItem();
       } catch (error) {

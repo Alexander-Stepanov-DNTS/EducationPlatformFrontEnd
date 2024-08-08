@@ -6,7 +6,7 @@
         <div class="col-md-4">
           <h5>О платформе</h5>
           <ul class="list-unstyled">
-            <li><a href="#" class="text-white" @click.prevent="$router.push('/home')">Главная</a></li>
+            <li><a href="#" class="text-white" @click.prevent="$router.push('/')">Главная</a></li>
             <li><a href="#" class="text-white" @click.prevent="$router.push('/AboutPage')">О нас</a></li>
             <li><a href="#" class="text-white" @click.prevent="$router.push('/AboutPage')">Политика конфиденциальности</a></li>
           </ul>
