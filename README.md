@@ -1,29 +1,36 @@
-# education
+### Инструкция по запуску фронтенд проекта
 
-This template should help get you started developing with Vue 3 in Vite.
+#### 1. Клонирование репозитория
 
-## Recommended IDE Setup
+Сначала клонируйте репозиторий с фронтендом:
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+```bash
+git clone https://github.com/ваш-пользователь/ваш-репозиторий-фронтенда.git
+```
 
-## Customize configuration
+#### 2. Переход в директорию проекта
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+Перейдите в директорию, куда был клонирован репозиторий:
 
-## Project Setup
+```bash
+cd ваш-репозиторий-фронтенда
+```
 
-```sh
+#### 3. Установка зависимостей
+
+Установите все необходимые зависимости:
+
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+#### 4. Запуск фронтенда
 
-```sh
+Запустите фронтенд сервер:
+
+```bash
 npm run dev
 ```
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+Фронтенд сервер будет запущен на порту 5173 (по умолчанию для Vite). 
+Откройте браузер и перейдите по адресу [http://localhost:5173](http://localhost:5173), чтобы увидеть ваш фронтенд.
