@@ -1,7 +1,7 @@
 <template>
   <section class="history py-5">
     <div class="container">
-      <h2>Наша история</h2>
+      <h2 class="historyHeader">Наша история</h2>
       <p>Наш сервис был основан группой учителей и родителей,
         которые увидели необходимость в доступном и качественном дополнительном образовании для школьников.
         Начав с небольших локальных курсов, мы выросли в платформу,
@@ -17,7 +17,7 @@ export default {
 </script>
 
 <style scoped>
-h2 {
+.historyHeader {
   text-align: center;
 }
 .history {

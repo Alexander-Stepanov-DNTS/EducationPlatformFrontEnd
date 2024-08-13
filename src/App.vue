@@ -1,9 +1,9 @@
 <template>
-  <navbar></navbar>
+  <navbar/>
   <div class="app">
-    <router-view></router-view>
+    <router-view/>
   </div>
-  <my-footer></my-footer>
+  <my-footer/>
 </template>
 
 <script>
@@ -24,6 +24,6 @@ export default {
   box-sizing: border-box;
 }
 .app {
-  padding: 0px;
+  padding: 0;
 }
 </style>
