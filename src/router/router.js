@@ -8,6 +8,7 @@ import CourseContentPage from '@/pages/CourseContentPage.vue';
 import PersonalArea from "@/pages/PersonalAreaPage.vue";
 import RegisterPage from "@/pages/RegisterPage.vue";
 import LoginPage from "@/pages/LoginPage.vue";
+import GroupedCoursesPage from "@/pages/GroupedCoursesPage.vue";
 import requireAuth from "@/router/authGuard.js";
 
 const routes = [
@@ -63,6 +64,11 @@ const routes = [
         path: '/login',
         name: 'Login',
         component: LoginPage
+    },
+    {
+        path: '/grouped-courses',
+        name: 'GroupedCourses',
+        component: GroupedCoursesPage
     },
 ]
 const router = createRouter({

@@ -80,5 +80,12 @@ export const CourseService = {
     async startCourse(enrolmentDto) {
         const response = await axiosInstance.post('/enrolments', enrolmentDto, { withCredentials: true });
         return response.data;
+    },
+    async fetchGroupedByCategory() {
+        return await axiosInstance.get(`/grouped-courses/group-by-category`, { withCredentials: true });
+    },
+
+    async fetchGroupedByRating() {
+        return await axiosInstance.get(`/grouped-courses/group-by-rating`, { withCredentials: true });
     }
 };

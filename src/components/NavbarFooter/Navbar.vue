@@ -12,6 +12,9 @@
         <li class="nav-item">
           <a class="nav-link" @click.prevent="$router.push('/AboutPage')">О нас</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" @click.prevent="$router.push('/grouped-courses')">Категории курсов</a>
+        </li>
       </ul>
       <div v-if="isAuthenticated">
         <a href="#" class="btn btn-login" @click.prevent="logout">Выйти</a>
